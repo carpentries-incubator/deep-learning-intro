@@ -9,12 +9,14 @@ exercises: 70
 - "What are good network designs for image data?"
 - "What is a convolutional layer?"
 - "How can we use different types of layers to prevent overfitting?"
+- "What is hyperparameter tuning?"
 :::
 
 ::: objectives
 - "Understand why convolutional and pooling layers are useful for image data"
 - "Implement a convolutional neural network on an image dataset"
 - "Use a drop-out layer to prevent overfitting"
+- "Be able to tune the hyperparameters of a Keras model"
 :::
 
 
@@ -784,6 +786,220 @@ sns.lineplot(data=loss_df, x='dropout_rate', y='val_loss')
 This is called hyperparameter tuning.
 ::::
 :::
+
+## Hyperparameter tuning
+::: instructor
+## Do a live demo instead of live coding
+You might want to demonstrate this section on hyperparamater tuning instead of doing live coding.
+The goal is to show that hyperparameter tuning can be done easily with `keras_tuner`, not to memorize all the exact syntax of how to do it. This will probably save you half an hour of participants typing over code that they already know from before. In addition, on really slow machines running the grid search could possibly take more than 10 minutes.
+:::
+
+In general if you are varying hyperparameters (such as the dropout rate) to find the combination of hyperparameters with the best model performance this is called hyperparameter tuning. A naive way to do this is to write a for-loop and train a slightly different model in every cycle. 
+However, it is better to use the `keras_tuner` package for this.
+
+Let's first define a function that creates a neuronal network given 2 hyperparameters, namely the dropout rate and the number of layers:
+```python
+def create_nn_with_hp(dropout_rate, n_layers):
+    inputs = keras.Input(shape=train_images.shape[1:])
+    x = inputs
+    for layer in range(n_layers):
+        x = keras.layers.Conv2D(50, (3, 3), activation='relu')(x)
+        x = keras.layers.MaxPooling2D((2, 2))(x)
+    x = keras.layers.Dropout(dropout_rate)(x)
+    x = keras.layers.Flatten()(x)
+    x = keras.layers.Dense(50, activation='relu')(x)
+    outputs = keras.layers.Dense(10)(x)
+    model = keras.Model(inputs=inputs, outputs=outputs, name="cifar_model")
+    return model
+```
+
+Now, let's find the best combination of hyperparameters using grid search. 
+Grid search is the simplest hyperparameter tuning strategy, 
+you just test all the combinations of a few predefined values for the hyperparameters that you want to vary.
+Note that this can take a some time to train (around 5 minutes or longer).
+```python
+import keras_tuner
+
+hp = keras_tuner.HyperParameters()
+
+def build_model(hp):
+    # Define values for hyperparameters to try out:
+    n_layers = hp.Int("n_layers", min_value=1, max_value=2, step=1)
+    dropout_rate = hp.Float("dropout_rate", min_value=0.2, max_value=0.8, step=0.3)
+    
+    model = create_nn_with_hp(dropout_rate, n_layers)
+    compile_model(model)
+    return model
+
+tuner = keras_tuner.GridSearch(build_model, objective='val_loss')
+
+tuner.search(train_images, train_labels, epochs=20,
+             validation_data=(val_images, val_labels))
+```
+```output
+Trial 6 Complete [00h 00m 46s]
+val_loss: 1.3021799325942993
+
+Best val_loss So Far: 1.2409346103668213
+Total elapsed time: 00h 03m 59s
+```
+Let's have a look at the results:
+
+```python
+tuner.results_summary()
+```
+```output
+Results summary
+Results in ./untitled_project
+Showing 10 best trials
+Objective(name="val_loss", direction="min")
+
+Trial 0004 summary
+Hyperparameters:
+n_layers: 2
+dropout_rate: 0.5
+Score: 1.2409346103668213
+
+Trial 0003 summary
+Hyperparameters:
+n_layers: 2
+dropout_rate: 0.2
+Score: 1.281008005142212
+
+Trial 0005 summary
+Hyperparameters:
+n_layers: 2
+dropout_rate: 0.8
+Score: 1.3021799325942993
+
+Trial 0002 summary
+Hyperparameters:
+n_layers: 1
+dropout_rate: 0.8
+Score: 1.3677740097045898
+
+Trial 0001 summary
+Hyperparameters:
+n_layers: 1
+dropout_rate: 0.5
+Score: 1.3880290985107422
+
+Trial 0000 summary
+Hyperparameters:
+n_layers: 1
+dropout_rate: 0.2
+Score: 1.4468265771865845
+```
+
+::: challenge
+
+## Hyperparameter tuning
+
+1: Looking at the grid search results, select all correct statements:
+
+- A. 6 different models were trained in this grid search run, because there are 6 possible combinations for the defined hyperparameter values
+- B. There are 2 different models trained, 1 for each hyperparameter that we want to change
+- C. 1 model is trained with 6 different hyperparameter combinations
+- D. The model with 1 layer and a dropout rate of 0.2 is the best model with a validation loss of 1.45
+- E. The model with 2 layers and a dropout rate of 0.5 is the best model with a validation loss of 1.24
+- F. We have found the model with the best possible combination of dropout rate and number of layers
+
+2 (Optional): Perform a grid search finding the best combination of the following hyperparameters: 2 different activation functions: 'relu', and 'tanh', and 2 different values for the kernel size: 3 and 4. Which combination works best?
+
+**Hint**: You can use `hp.Choice("name", ["value1", "value2"])` to use hyperparameters from a predefined set of possible values. 
+
+:::: solution
+## Solution
+
+1: 
+
+- A: Correct, 2 values for number of layers (1 and 2) are combined with 3 values for the dropout rate (0.2, 0.5, 0.8). 2 * 3 = 6 combinations
+- B: Incorrect, a model is trained for each combination of defined hyperparameter values
+- C: Incorrect, it is important to note that you actually train and test different models for each run of the grid search
+- D: Incorrect, this is the worst model since the validation loss is highest
+- E: Correct, this is the best model with the lowest loss
+- F: Incorrect, it could be that a different number of layers in combination with a dropout rate that we did not test (for example 3 layers and a dropout rate of 0.6) could be the best model.
+
+2 (Optional): 
+
+You need to adapt the code as follows:
+```python
+def create_nn_with_hp(activation_function, kernel_size):
+    inputs = keras.Input(shape=train_images.shape[1:])
+    x = inputs
+    for layer in range(3):
+        x = keras.layers.Conv2D(50, (kernel_size, kernel_size), activation=activation_function)(x)
+        x = keras.layers.MaxPooling2D((2, 2))(x)
+    x = keras.layers.Dropout(0.2)(x)
+    x = keras.layers.Flatten()(x)
+    x = keras.layers.Dense(50, activation=activation_function)(x)
+    outputs = keras.layers.Dense(10)(x)
+    model = keras.Model(inputs=inputs, outputs=outputs, name="cifar_model")
+    return model
+    
+hp = keras_tuner.HyperParameters()
+
+def build_model(hp):
+    kernel_size = hp.Int("kernel_size", min_value=3, max_value=4, step=1)
+    activation = hp.Choice("activation", ["relu", "tanh"])
+    model = create_nn_with_hp(activation, kernel_size)
+    compile_model(model)
+    return model
+    
+tuner = keras_tuner.GridSearch(build_model, objective='val_loss')
+tuner.search(train_images, train_labels, epochs=20,
+             validation_data=(val_images, val_labels))
+```
+```output
+Trial 4 Complete [00h 00m 56s]
+val_loss: 1.44037926197052
+
+Best val_loss So Far: 1.2700632810592651
+Total elapsed time: 00h 04m 01s
+```
+Let's look at the results:
+```python
+tuner.results_summary()
+```
+```output
+Results summary
+Results in ./untitled_project
+Showing 10 best trials
+Objective(name="val_loss", direction="min")
+
+Trial 0000 summary
+Hyperparameters:
+kernel_size: 3
+activation: relu
+Score: 1.2700632810592651
+
+Trial 0001 summary
+Hyperparameters:
+kernel_size: 3
+activation: tanh
+Score: 1.2945374250411987
+
+Trial 0002 summary
+Hyperparameters:
+kernel_size: 4
+activation: relu
+Score: 1.431167483329773
+
+Trial 0003 summary
+Hyperparameters:
+kernel_size: 4
+activation: tanh
+Score: 1.44037926197052
+```
+A kernel size of 3 and `relu` as activation function is the best tested combination.
+
+::::
+::: 
+
+Grid search can quickly result in a combinatorial explosion because all combinations of hyperparameters are trained and tested.
+Instead, `random search` randomly samples combinations of hyperparemeters, allowing for a much larger look through a large number of possible hyperparameter combinations.
+
+Next to grid search and random search there are many different hyperparameter tuning strategies, including `neural architecture search` where a separate neural network is trained to find the best architecture for a model!
 
 ## 10. Share model
 Let's save our model
