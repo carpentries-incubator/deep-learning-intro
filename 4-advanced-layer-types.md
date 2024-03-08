@@ -588,7 +588,7 @@ plot_history(history, ['accuracy', 'val_accuracy'])
 plot_history(history, ['loss', 'val_loss'])
 ```
 
-![](/fig/04_training_history_loss_2.png){alt="Plot of training loss and validation loss vs epochs for the trained model"}
+![](fig/04_training_history_loss_2.png){alt="Plot of training loss and validation loss vs epochs for the trained model"}
 
 ::::
 :::
