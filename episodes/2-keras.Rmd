@@ -479,7 +479,7 @@ For the one-hot encoding that we selected before a fitting loss function is the 
 In Keras this is implemented in the `keras.losses.CategoricalCrossentropy` class.
 This loss function works well in combination with the `softmax` activation function
 we chose earlier.
-The Categorical Crossentropy works by comparing the probabilities that the
+The *categorical cross-entropy* works by comparing the probabilities that the
 neural network predicts with 'true' probabilities that we generated using the one-hot encoding.
 This is a measure for how close the distribution of the three neural network outputs corresponds to the distribution of the three values in the one-hot encoding.
 It is lower if the distributions are more similar.
@@ -519,6 +519,14 @@ history = model.fit(X_train, y_train, epochs=100)
 
 The fit method returns a history object that has a history attribute with the training loss and
 potentially other metrics per training epoch.
+
+### Setting baseline expectations
+What might be a good value for loss here when looking at categorical cross-entropy loss? In a classification context, we can establish a baseline by determining what loss we would get for simply guessing each class randomly. If predictions are completely random, the cross-entropy loss will be approximately log(n), where n is the number of classes. Any useful model should be able to outperform (have a lower loss) this baseline.
+```python
+import numpy as np
+np.log(3)
+```
+
 It can be very insightful to plot the training loss to see how the training progresses.
 Using seaborn we can do this as follow:
 ```python
