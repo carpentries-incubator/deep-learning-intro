@@ -424,6 +424,7 @@ So, let's look at how the predicted sunshine hour have developed with reference 
 def plot_predictions(y_pred, y_true, title):
     plt.style.use('ggplot')  # optional, that's only to define a visual style
     plt.scatter(y_pred, y_true, s=10, alpha=0.5)
+    plt.axline((0,0),slope = 1, color = "black") # plot diagonal reference line
     plt.xlabel("predicted sunshine hours")
     plt.ylabel("true sunshine hours")
     plt.title(title)
