@@ -5,134 +5,109 @@ title: Setup
 
 ::::::::::::::::::::::::::::::::::::::: discussion
 
-### Installing Python using Anaconda
+### Installing Python
 
 [Python][python] is a popular language for scientific computing, and a frequent choice
-for machine learning as well. Installing all of its scientific packages
-individually can be a bit difficult, however, so we recommend the installer [Anaconda][anaconda]
-which includes most (but not all) of the software you will need.
+for machine learning as well.
+To install Python, follow the [Beginner's Guide](https://wiki.python.org/moin/BeginnersGuide/Download) or head straight to the [download page](https://www.python.org/downloads/).
 
-Regardless of how you choose to install it, please make sure you install Python
-version 3.x (e.g., 3.4 is fine). Also, please set up your python environment at
-least a day in advance of the workshop.  If you encounter problems with the
-installation procedure, ask your workshop organizers via e-mail for assistance so
+Please set up your python environment at least a day in advance of the workshop.
+If you encounter problems with the installation procedure, ask your workshop organizers via e-mail for assistance so
 you are ready to go as soon as the workshop begins.
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::
 
-:::::::::::::::: spoiler
-
-### Windows
-
-Checkout the [video tutorial][video-windows] or:
-
-1. Open [https://www.anaconda.com/products/distribution][anaconda-distribution]
-with your web browser.
-2. Download the Python 3 installer for Windows.
-3. Double-click the executable and install Python 3 using _MOST_ of the
-   default settings. The only exception is to check the
-   **Make Anaconda the default Python** option.
-
-:::::::::::::::::::::::::
-
-:::::::::::::::: spoiler
-
-### MacOS
-
-Checkout the [video tutorial][video-mac] or:
-
-1. Open [https://www.anaconda.com/products/distribution][anaconda-distribution]
-   with your web browser.
-2. Download the Python 3 installer for OS X.
-   Make sure to use the correct version for your hardware, 
-   i.e. choose the options with "(M1)" if yours is one of the more recent models
-   containing Apple's chip.
-3. Install Python 3 using all of the defaults for installation.
-
-:::::::::::::::::::::::::
-
-
-:::::::::::::::: spoiler
-
-### Linux
-
-Note that the following installation steps require you to work from the shell.
-If you run into any difficulties, please request help before the workshop begins.
-
-1.  Open [https://www.anaconda.com/products/distribution][anaconda-distribution] with your web browser.
-2.  Download the Python 3 installer for Linux.
-3.  Install Python 3 using all of the defaults for installation.
-    a.  Open a terminal window.
-    b.  Navigate to the folder where you downloaded the installer
-    c.  Type
-    ```bash
-    bash Anaconda3-
-    ```
-    and press tab.  The name of the file you just downloaded should appear.
-    d.  Press enter.
-    e.  Follow the text-only prompts.  When the license agreement appears (a colon
-        will be present at the bottom of the screen) hold the down arrow until the
-        bottom of the text. Type `yes` and press enter to approve the license. Press
-        enter again to approve the default location for the files. Type `yes` and
-        press enter to prepend Anaconda to your `PATH` (this makes the Anaconda
-        distribution the default Python).
-
-:::::::::::::::::::::::::
-
 ## Installing the required packages{#packages}
 
-[Conda](https://docs.conda.io/projects/conda/en/latest/) is the package management system associated with [Anaconda](https://anaconda.org) and runs on Windows, macOS and Linux.
-Conda should already be available in your system once you installed Anaconda successfully. Conda thus works regardless of the operating system.
+[Pip](https://pip.pypa.io/en/stable/) is the package management system built into Python.
+Pip should be available in your system once you installed Python successfully.
 
-1. Make sure you have an up-to-date version of Conda running.
-See [these instructions](https://docs.anaconda.com/anaconda/install/update-version/) for updating Conda if required.
+Open a terminal (Mac/Linux) or Command Prompt (Windows) and run the following commands.
 
-2. To create a conda environment called `dl_workshop` with the required packages, open a terminal (Mac/Linux) or Anaconda prompt (Windows) and type the command:
-```bash
-conda create --name dl_workshop python jupyter 'seaborn>=13.0.0' scikit-learn pandas
+1. Create a [virtual environment](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#create-and-use-virtual-environments) called `dl_workshop`:
+
+::: spoiler
+
+### On Linux/macOs
+
+```shell
+python3 -m venv dl_workshop
 ```
 
-3. Activate the newly created environment:
-```
-conda activate dl_workshop
-```
+:::
 
-4. After activating your environment, install tensorflow using pip (python's package manager):
-```bash
-pip install tensorflow
-```
-Note that modern versions of Tensorflow make Keras available as a module. [pip](https://pip.pypa.io/en/stable/) is the package management system for Python software packages. It is integrated into your local Python installation and runs regardless of your operating system too.
+::: spoiler
 
-### Python package installation troubleshooting
+### On Windows
 
-:::::::::::::::: spoiler
-
-### Troubleshooting for Windows
-It is possible that Windows users will run into version conflicts. If you are on Windows and get
-errors running the command, you can try installing the packages using pip within a conda environment:
-
-```bash
-conda create -n dl_workshop python jupyter
-conda activate dl_workshop
-pip install tensorflow>=2.5 seaborn scikit-learn pandas
+```shell
+py -m venv dl_workshop
 ```
 
-:::::::::::::::::::::::::
+:::
 
-::::::::::::::::::: spoiler
+2. Activate the newly created virtual environment:
 
-### Troubleshooting for Macs with Apple silicon chip
-Newer Macs (from 2020 onwards) often have a different kind of chip, manufactured by Apple instead of Intel.
-This can lead to problems installing Tensorflow.
-If you get errors running the installation command or conda hangs endlessly,
-you probably [need to change the version of Anaconda you have installed](https://www.youtube.com/watch?v=BEUU-icPg78).
+::: spoiler
 
-1. Uninstall Anaconda
-2. [Download the version of Anaconda for Apple chips][anaconda-distribution] (i.e. the version with "(M1)" in the name)
-   and install it with the default settings
-3. Follow [the instructions above](#packages) to install the required packages
+### On Linux/macOs
 
-::::::::::::::::::::::::::::
+```shell
+source dl_workshop/bin/activate
+```
+
+:::
+
+::: spoiler
+
+### On Windows
+
+```shell
+dl_workshop\Scripts\activate
+```
+
+:::
+
+Remember that you need to activate your environment every time you restart your terminal!
+
+3. Install the required packages:
+
+::: spoiler
+
+### On Linux/macOs
+
+```shell
+python3 -m pip install jupyter seaborn scikit-learn pandas tensorflow
+```
+
+::: spoiler
+
+### Advanced: TensorFlow with support for Mac M1/M2/M3
+
+Recent Macs have special chips (M1/M2/M3) that can accelerate deep learning processes.
+Apple has developed the [tensorflow-metal](https://developer.apple.com/metal/tensorflow-plugin/) package to support these chips in TensorFlow.
+This is not supported by the standard TensorFlow installation, and not required for this lesson.
+
+Nevertheless, you can install the on top of the standard `tensorflow`:
+
+```shell
+python -m pip install tensorflow-metal
+```
+
+:::
+:::
+
+::: spoiler
+
+### On Windows
+
+```shell
+py -m pip install jupyter seaborn scikit-learn pandas tensorflow
+```
+
+:::
+
+Note: Tensorflow makes Keras available as a module too.
 
 ## Starting Jupyter Lab
 
@@ -141,20 +116,16 @@ Jupyter Lab is compatible with Firefox, Chrome, Safari and Chromium-based browse
 Note that Internet Explorer and Edge are *not* supported.
 See the [Jupyter Lab documentation](https://jupyterlab.readthedocs.io/en/latest/getting_started/accessibility.html#compatibility-with-browsers-and-assistive-technology) for an up-to-date list of supported browsers.
 
-If you installed Python using Anaconda, Jupyter should already be on your system. If
-you did not use Anaconda, use the Python package manager pip
-(see the [Jupyter website][jupyter-install] for details.)
+To start Jupyter Lab, open a terminal (Mac/Linux) or Command Prompt (Windows) and type the command:
 
-To start Jupyter Lab, open a terminal (Mac/Linux) or Anaconda prompt (Windows) and type the command:
-
-```bash
+```shell
 jupyter lab
 ```
 
-To start the Python interpreter without Jupyter Lab, open a terminal (Mac/Linux) or Anaconda prompt (Windows)
-or git bash and type the command:
+To start the Python interpreter without Jupyter Lab, open a terminal (Mac/Linux) or Command Prompt (Windows)
+and type the command:
 
-```bash
+```shell
 python
 ```
 
@@ -189,16 +160,8 @@ Alternatively you can use [Google colab](https://colab.research.google.com/). If
 
 Download the [weather dataset prediction csv][weatherdata] and [Dollar street dataset (4 files in total)][dollar-street]
 
-[anaconda]: https://www.anaconda.com/products/individual
-[anaconda-distribution]: https://www.anaconda.com/products/distribution
 [dollar-street]: https://zenodo.org/api/records/10970014/files-archive
 [jupyter]: http://jupyter.org/
 [jupyter-install]: http://jupyter.readthedocs.io/en/latest/install.html#optional-for-experienced-python-developers-installing-jupyter-with-pip
 [python]: https://python.org
-[video-mac]: https://www.youtube.com/watch?v=TcSAln46u9U
-[video-windows]: https://www.youtube.com/watch?v=xxQ0mzZ8UvA
-[penguindata]: https://zenodo.org/record/3960218/files/allisonhorst/palmerpenguins-v0.1.0.zip?download=1
 [weatherdata]: https://zenodo.org/record/5071376/files/weather_prediction_dataset_light.csv?download=1
-[weatherbbqdata]: https://zenodo.org/record/4980359/files/weather_prediction_bbq_labels.csv?download=1
-
-

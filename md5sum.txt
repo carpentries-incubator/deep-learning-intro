@@ -17,6 +17,6 @@
 "instructors/schedule.md" "da1a92ad7102c42c77abb5170ace55fd" "site/built/schedule.md" "2024-08-06"
 "instructors/survey-templates.md" "ea5d46e7b54d335f79e57a7bc31d1c5c" "site/built/survey-templates.md" "2024-08-06"
 "learners/reference.md" "e47218673643f23431c540c2d3b27868" "site/built/reference.md" "2024-08-06"
-"learners/setup.md" "66d77e40b62bcc25ee459e0e5814bdf0" "site/built/setup.md" "2024-08-06"
+"learners/setup.md" "9fae3d5f4e2c11b03a7a3a7a4fb53f58" "site/built/setup.md" "2024-08-06"
 "profiles/learner-profiles.md" "ef0f26dd0874387d80ed3fd468b99e23" "site/built/learner-profiles.md" "2024-08-06"
 "renv/profiles/lesson-requirements/renv.lock" "9c9ea44ada337fd87a90aef2338ce9ba" "site/built/renv.lock" "2024-08-06"
