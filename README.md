@@ -70,12 +70,8 @@ See the [Carpentries Workbench usage instructions](https://carpentries.github.io
 ## Maintainer(s)
 
 Current maintainers of this lesson are
-* Peter Steinbach
-* Colin Sauze
-* Djura Smits
-* Sven van der Burg
-* Pranav Chandramouli
-* Carsten Schnober
+* Sven van der Burg (s.vanderburg@esciencecenter.nl)
+* Carsten Schnober (c.schnober@esciencecenter.nl)
 
 ## Citation and authors
 
